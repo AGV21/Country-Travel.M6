@@ -19,26 +19,33 @@
 ?>
 <DOC! html>
 <html>
-    <body>
-        <form>
-            <select>
-                <option value='$name'>Pick Country</option>
+    <head>
+        <title>Travel</title>
+        <link href="css/script.css" rel="stylesheet">
+    </head>
+    <body id="mainContainer">
+        <div class="trans.box">
+            <p>Visited? Leave a review</p>
+            <form method="post">
+                <select>
+                    <option value='$name'>Pick Country</option>
 
-                <?php
-                while($rows = $CountryName->fetch_assoc()){
-                    $name = $rows['name'];
-                ?>
-                <option value= <?php echo($name) ?>>
                     <?php
-                    echo($name);
+                    while($rows = $CountryName->fetch_assoc()){
+                        $name = $rows['name'];
                     ?>
-                </option>
-                <?php
-                }
-                ?>
-            </select>
-            <input type="text">
-            <input type='submit' value='Post'>
-        </form>
+                    <option value= <?php echo($name) ?>>
+                        <?php
+                        echo($name);
+                        ?>
+                    </option>
+                    <?php
+                    }
+                    ?>
+                </select><br>
+                <input type="text"><br>
+                <input type='submit' value='Post'>
+            </form>
+        </div>
     </body> 
 </html>
