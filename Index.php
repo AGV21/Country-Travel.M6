@@ -16,7 +16,6 @@
         //echo("yes");
     }
 
-    // exit();
     if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['postButton'])){
         $content = mysqli_real_escape_string($databaseConnection, $_POST['content']);
 
@@ -29,6 +28,7 @@
             $sql .= 'VALUE(';
             $sql .= "'" . $content . "', ";
             $sql .= "'" . $userid . "'";
+            //$sql .= "'" . 
             $sql .= ')';
 
         $postSavedSuccess = mysqli_query($databaseConnection, $sql);
@@ -44,6 +44,32 @@
         }
         
     }
+    if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editButton'])){
+        $postEdit = mysqli_real_escape_string($databaseConnection, $_GET['postEdit']);
+        $updatedPost = mysqli_real_escape_string($databaseConnection, $_POST['updatedPost']);
+  
+       
+  
+        $sql = "UPDATE post SET ";
+        $sql .= "content='" . $updatedPost ."' ";
+        $sql .= "WHERE id='" . $postEdit . "'";
+  
+        echo($sql);
+  
+        $postUpdateSuccess = mysqli_query($databaseConnection, $sql);
+  
+        if ($postUpdateSuccess){
+            header("Location: index.php");
+            exit();
+        } else {
+            echo(mysqli_error($databaseConnection));
+            if ($databaseConnection){
+                mysqli_close($databaseConnection );
+            }
+            exit();
+        }
+    }
+ 
 
 ?>
 <DOC! html>
@@ -83,7 +109,6 @@
                 while($currentPost = mysqli_fetch_assoc($allPost)){
             ?>
                 <article> 
-                    <?php //echo($currentPost['Date']);?> :
                     <?php echo(htmlspecialchars($currentPost['content'])); ?> by
                     <?php
                        $sql = "SELECT * FROM users ";
@@ -96,10 +121,31 @@
                     <?php
                     if($userOfPost['id'] == $userid){
                     ?>
+                    <a href="<?php echo("index.php?userDeleteid=" . urlencode($currentPost['id']));?>">Delete</a>
+                    <a href="<?php echo("index.php?userEditid=" . urlencode($currentPost['id']));?>">Edit</a>
                     <?php
                     }
                     ?>
                 </article>
+                <?php
+                    if(isset($_GET['userEditid']) && $currentPost['id'] == $_GET['userEditid']){
+                        $userEditid = mysqli_real_escape_string($databaseConnection, $_GET['userEditid']);
+
+                        $sql = "SELECT * FROM post ";
+                        $sql .="WHERE id='" . $userEditid . "'";
+
+                        $postEdit = mysqli_query($databaseConnection, $sql);
+                        $postEdit = mysqli_fetch_assoc($postEdit);
+               ?>
+               <form action="<?php echo("index.php?postEdit=" . urlencode($postEdit['id']));?>" method="post">
+                   <textarea name="updatedPost"><?php echo($postEdit['content']); ?></textarea>
+                   <input type="submit" value="Edit post" name="editButton">
+               </form>
+               <?php
+ 
+                   }
+               ?>
+
             <?php
                 }
             ?>
