@@ -44,6 +44,7 @@
         }
         
     }
+
     if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editButton'])){
         $postEdit = mysqli_real_escape_string($databaseConnection, $_GET['postEdit']);
         $updatedPost = mysqli_real_escape_string($databaseConnection, $_POST['updatedPost']);
@@ -69,8 +70,28 @@
             exit();
         }
     }
- 
 
+    if (isset($_GET['userDeleteid'])){
+        $userDeleteId = mysqli_real_escape_string($databaseConnection, $_GET['userDeleteid']);
+  
+        $sql = "DELETE FROM post ";
+        $sql .= "WHERE id='" . $userDeleteId . "'";
+  
+        $postDeletionSuccess = mysqli_query($databaseConnection, $sql);
+  
+        if($postDeletionSuccess){
+            header( "Location: index.php" );
+            exit();
+        }else {
+            echo(mysqli_error($databaseConnection));
+  
+            if($databaseConnection){
+                mysqli_close($databaseConnection);
+            }
+            exit();
+        }
+    }
+    
 ?>
 <DOC! html>
 <html>
